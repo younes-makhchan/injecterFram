@@ -3,10 +3,8 @@ package ioc;
 import ioc.config.InjectorConfiguration;
 import ioc.enums.DirectoryType;
 import ioc.models.Directory;
-import ioc.services.ClassLocater;
-import ioc.services.ClassLocatorForJARFile;
-import ioc.services.ClasssLocatorForDirectory;
-import ioc.services.DirectoryResolverImpl;
+import ioc.models.ServiceDetails;
+import ioc.services.*;
 
 import java.util.Set;
 
@@ -19,14 +17,15 @@ public class injectorMain {
     run(startupClass,new InjectorConfiguration());
     }
     public  static  void  run(Class<?> startupClass,InjectorConfiguration configuration){
+        ServicesScanningService servicesScanningService=new ServicesScanningServiceImpl(configuration.annotations());
         Directory directory=new DirectoryResolverImpl().resolveDirectory(startupClass);
 
-        System.out.println("Dir type :"+directory.getDirectoryType());
         ClassLocater classLocater=new ClasssLocatorForDirectory();
         if(directory.getDirectoryType()== DirectoryType.JAR_FILE){
             classLocater=new ClassLocatorForJARFile();
         }
-        Set<Class<?>> classes=classLocater.locateClasses(directory.getDirectory());
-        System.out.println(classes);
+        Set<Class<?>> locateClasses=classLocater.locateClasses(directory.getDirectory());
+        System.out.println(locateClasses);
+        Set<ServiceDetails<?>> serviceDetails=servicesScanningService.mapServices(locateClasses);
     }
 }
