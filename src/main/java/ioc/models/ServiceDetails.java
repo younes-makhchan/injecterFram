@@ -74,8 +74,8 @@ public class ServiceDetails<T> {
         this.targetConstructor = targetConstructor;
     }
 
-    public void setInstance(T instance) {
-        this.instance = instance;
+    public void setInstance(Object instance) {
+        this.instance = (T)instance;
     }
 
     public void setPostConstructMethod(Method postConstructMethod) {
