@@ -6,6 +6,7 @@ import ioc.models.Directory;
 import ioc.models.ServiceDetails;
 import ioc.services.*;
 
+import java.util.List;
 import java.util.Set;
 
 public class injectorMain {
@@ -18,6 +19,12 @@ public class injectorMain {
     }
     public  static  void  run(Class<?> startupClass,InjectorConfiguration configuration){
         ServicesScanningService servicesScanningService=new ServicesScanningServiceImpl(configuration.annotations());
+        ObjectInstantiationService objectInstantiationService = new ObjectInstantiationServiceImpl();
+        ServicesInstantiationService instantiationService= new ServicesInstantiationServiceImpl(
+                configuration.instantiations(),
+                objectInstantiationService
+        );
+
         Directory directory=new DirectoryResolverImpl().resolveDirectory(startupClass);
 
         ClassLocater classLocater=new ClasssLocatorForDirectory();
@@ -26,6 +33,8 @@ public class injectorMain {
         }
         Set<Class<?>> locateClasses=classLocater.locateClasses(directory.getDirectory());
         System.out.println(locateClasses);
-        Set<ServiceDetails<?>> serviceDetails=servicesScanningService.mapServices(locateClasses);
+        Set<ServiceDetails<?>> mappedServices=servicesScanningService.mapServices(locateClasses);
+        List<ServiceDetails<?>> serviceDetails=instantiationService.instantiateServicesAndBeans(mappedServices);
+
     }
 }

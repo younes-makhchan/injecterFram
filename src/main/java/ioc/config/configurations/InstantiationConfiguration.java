@@ -6,7 +6,7 @@ import ioc.constants.Constants;
 
 public class InstantiationConfiguration extends BaseSubConfiguration {
     private  int maximumNumberOfiterations;
-    protected InstantiationConfiguration(InjectorConfiguration parentConfig) {
+    public InstantiationConfiguration(InjectorConfiguration parentConfig) {
         super(parentConfig);
         this.maximumNumberOfiterations= Constants.MAX_NUMBER_OF_INSTANTIATIONS;
     }

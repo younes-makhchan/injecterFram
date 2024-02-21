@@ -19,7 +19,7 @@ public class ServicesInstantiationServiceImpl implements ServicesInstantiationSe
     private  final  List<Class<?>> allAvailableClasses;
     private final List<ServiceDetails<?>> instantiatedServices;
     private  final  String MAX_NUMBER_OF_ALLOWED_ITTERATION_REACHED="Maximum number of allowed iteration was reached '%s' ";
-    public ServicesInstantiationServiceImpl(InstantiationConfiguration configuration, ObjectInstantiationService instantiationService, LinkedList<EnqueuedServiceDetails> enqueuedServiceDetails, List<Class<?>> allAvailableClasses) {
+    public ServicesInstantiationServiceImpl(InstantiationConfiguration configuration, ObjectInstantiationService instantiationService ) {
         this.configuration = configuration;
         this.instantiationService = instantiationService;
         this.enqueuedServiceDetails = new LinkedList<>();
