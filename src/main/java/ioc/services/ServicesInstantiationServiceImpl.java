@@ -30,6 +30,7 @@ public class ServicesInstantiationServiceImpl implements ServicesInstantiationSe
     @Override
     public List<ServiceDetails<?>> instantiateServicesAndBeans(Set<ServiceDetails<?>> mappedServices) throws ServiceInstantiationException {
         this.init(mappedServices);
+        this.checkForMissingServices(mappedServices);
         int counter=0;
         int maxNumberOfIteration=this.configuration.getMaximumNumberOfiterations();
         while(!this.enqueuedServiceDetails.isEmpty()){
@@ -93,6 +94,22 @@ public class ServicesInstantiationServiceImpl implements ServicesInstantiationSe
             this.allAvailableClasses.addAll(Arrays.stream(serviceDetails.getBeans()).map(Method::getReturnType).collect(Collectors.toList()));
         }
     }
+    private  void checkForMissingServices(Set<ServiceDetails<?>> mappedService) throws ServiceInstantiationException{
+        for (ServiceDetails<?> serviceDetails : mappedService) {
+            for (Class<?> parameterType : serviceDetails.getTargetConstructor().getParameterTypes()) {
+                    if(!this.isAssignableTypePresent(parameterType)){
+                        throw  new ServiceInstantiationException(String.format("Could not create  instance of '%s'. Parameter '%s' implementation was not found ",serviceDetails.getServiceType().getName(),parameterType.getName()));
+                    }
+            }
+        }
+    }
+    private  boolean isAssignableTypePresent(Class<?> cls){
+        for (Class<?> allAvailableClass : this.allAvailableClasses) {
+            if(cls.isAssignableFrom(allAvailableClass)){
+                return  true;
+            }
+        }
 
+    }
 
 }
