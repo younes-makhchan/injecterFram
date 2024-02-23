@@ -37,7 +37,6 @@ public class ClasssLocatorForDirectory implements ClassLocater{
                 return;
             }
             final String className=packageName+file.getName().replace(Constants.JAVA_BINARY_EXTENSION,"");
-            System.out.println(className );
             try{
                 this.locatedClasses.add(Class.forName(className));
 

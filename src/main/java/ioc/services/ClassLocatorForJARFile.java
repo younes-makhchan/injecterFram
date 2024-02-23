@@ -17,7 +17,6 @@ public class ClassLocatorForJARFile implements ClassLocater{
         final Set<Class<?>> locatedClasses=new HashSet<>();
 
         try{
-            System.out.println("directory "+directory);
             JarFile jarFile=new JarFile(new File(directory));
            Enumeration<JarEntry> entries= jarFile.entries();
            while(entries.hasMoreElements()){

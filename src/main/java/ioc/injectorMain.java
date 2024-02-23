@@ -28,7 +28,6 @@ public class injectorMain {
 
     @StartUp
     public  void appStart(){
-        System.out.println("last called");
         DEPENDENCY_CONTAINER.reload(DEPENDENCY_CONTAINER.getService(TestServiceOne.class),true);
     }
     public  static  void  run(Class<?> startupClass,InjectorConfiguration configuration){
