@@ -75,6 +75,7 @@ public class DependencyContainerImpl implements DependencyContainer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> ServiceDetails<T> getServiceDetails(Class<?> serviceType) {
+
         return (ServiceDetails<T>) this.servicesAndBeans.stream()
                 .filter(sd->serviceType.isAssignableFrom(sd.getServiceType()))
                 .findFirst().orElse(null);

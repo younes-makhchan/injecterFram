@@ -1,5 +1,6 @@
 package ioc;
 
+import ioc.annotations.Service;
 import ioc.config.InjectorConfiguration;
 import ioc.enums.DirectoryType;
 import ioc.models.Directory;
@@ -11,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-
+@Service
 public class injectorMain {
     public static  final  DependencyContainer DEPENDENCY_CONTAINER;
     static {
@@ -45,13 +46,13 @@ public class injectorMain {
             classLocater=new ClassLocatorForJARFile();
         }
         Set<Class<?>> locateClasses=classLocater.locateClasses(directory.getDirectory());
-        System.out.println(locateClasses);
         Set<ServiceDetails<?>> mappedServices=servicesScanningService.mapServices(locateClasses);
         List<ServiceDetails<?>> serviceDetails=instantiationService.instantiateServicesAndBeans(mappedServices);
         DEPENDENCY_CONTAINER.init(serviceDetails,objectInstantiationService);
         runStartUpMethod(startupClass);
     }
     private  static void  runStartUpMethod(Class<?> startupClass){
+
         ServiceDetails<?> serviceDetails = DEPENDENCY_CONTAINER.getServiceDetails(startupClass);
         for (Method declaredMethod : serviceDetails.getServiceType().getDeclaredMethods()) {
             if(declaredMethod.getParameterCount()!=0||

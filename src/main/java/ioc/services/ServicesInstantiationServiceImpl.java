@@ -91,7 +91,9 @@ public class ServicesInstantiationServiceImpl implements ServicesInstantiationSe
         this.instantiatedServices.clear();
         for(ServiceDetails<?> serviceDetails:mappedServices){
             this.enqueuedServiceDetails.add(new EnqueuedServiceDetails((serviceDetails)));
-            this.allAvailableClasses.addAll(Arrays.stream(serviceDetails.getBeans()).map(Method::getReturnType).collect(Collectors.toList()));
+            this.allAvailableClasses.add(serviceDetails.getServiceType());
+            this.allAvailableClasses.addAll(Arrays.stream(serviceDetails.getBeans()).map(Method::getReturnType).toList());
+
         }
     }
     private  void checkForMissingServices(Set<ServiceDetails<?>> mappedService) throws ServiceInstantiationException{

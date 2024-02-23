@@ -1,9 +1,6 @@
 package ioc.services;
 
-import ioc.annotations.AutoWired;
-import ioc.annotations.Bean;
-import ioc.annotations.PostConstruct;
-import ioc.annotations.PreDestroy;
+import ioc.annotations.*;
 import ioc.config.configurations.CustomAnnotationsConfiguration;
 import ioc.models.ServiceDetails;
 
@@ -24,11 +21,14 @@ public class ServicesScanningServiceImpl implements ServicesScanningService {
     public Set<ServiceDetails<?>> mapServices(Set<Class<?>> locatedClasses) {
         final Set<ServiceDetails<?>> serviceDetailsStorage=new HashSet<>();
         final Set<Class<? extends Annotation>> customServiceAnnotations=configuration.getCustomServiceAnnotations();
+        customServiceAnnotations.add(Service.class);
+
         for(Class<?> cls:locatedClasses){
             if(cls.isInterface()){
                 continue;
             }
             for (Annotation annotation : cls.getAnnotations()) {
+
                 if(customServiceAnnotations.contains(annotation.annotationType())){
                     ServiceDetails<?> serviceDetails=new ServiceDetails(cls,
                             annotation,
