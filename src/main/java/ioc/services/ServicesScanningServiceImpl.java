@@ -37,12 +37,12 @@ public class ServicesScanningServiceImpl implements ServicesScanningService {
                             this.findVoidMethodWithZeroParamsAndAnnotations(PreDestroy.class,cls),
                             this.findBeans(cls));
 
-
+                    serviceDetailsStorage.add(serviceDetails);
                 }
             }
 
         }
-        return null;
+        return serviceDetailsStorage;
     }
     private Constructor<?> findSuitableConstructure(Class<?> cls) {
         for (Constructor<?> ctr : cls.getDeclaredConstructors()) {

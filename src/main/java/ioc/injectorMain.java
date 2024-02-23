@@ -5,17 +5,30 @@ import ioc.enums.DirectoryType;
 import ioc.models.Directory;
 import ioc.models.ServiceDetails;
 import ioc.services.*;
+import ioc.test.TestServiceOne;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
 public class injectorMain {
+    public static  final  DependencyContainer DEPENDENCY_CONTAINER;
+    static {
+        DEPENDENCY_CONTAINER=new DependencyContainerImpl();
+    }
     public static void main(String[] args) {
         run(injectorMain.class);
     }
     public  static  void run(Class<?> startupClass){
 
     run(startupClass,new InjectorConfiguration());
+    }
+
+    @StartUp
+    public  void appStart(){
+        System.out.println("last called");
+        DEPENDENCY_CONTAINER.reload(DEPENDENCY_CONTAINER.getService(TestServiceOne.class),true);
     }
     public  static  void  run(Class<?> startupClass,InjectorConfiguration configuration){
         ServicesScanningService servicesScanningService=new ServicesScanningServiceImpl(configuration.annotations());
@@ -35,6 +48,25 @@ public class injectorMain {
         System.out.println(locateClasses);
         Set<ServiceDetails<?>> mappedServices=servicesScanningService.mapServices(locateClasses);
         List<ServiceDetails<?>> serviceDetails=instantiationService.instantiateServicesAndBeans(mappedServices);
+        DEPENDENCY_CONTAINER.init(serviceDetails,objectInstantiationService);
+        runStartUpMethod(startupClass);
+    }
+    private  static void  runStartUpMethod(Class<?> startupClass){
+        ServiceDetails<?> serviceDetails = DEPENDENCY_CONTAINER.getServiceDetails(startupClass);
+        for (Method declaredMethod : serviceDetails.getServiceType().getDeclaredMethods()) {
+            if(declaredMethod.getParameterCount()!=0||
+                    (declaredMethod.getReturnType()!=void.class&&
+                            declaredMethod.getReturnType()!=Void.class)
+            ||!declaredMethod.isAnnotationPresent(StartUp.class)){
+                continue;
+            }
+            declaredMethod.setAccessible(true);
+            try{
+                declaredMethod.invoke(serviceDetails.getInstance());
 
+            }catch (IllegalAccessException| InvocationTargetException e){
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
