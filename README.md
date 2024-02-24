@@ -7,6 +7,8 @@ Create mini framework similar to Spring IOC with Options :
 
 Features
 -----------------------
+![image](https://github.com/younes-makhchan/injecterFram/assets/74161217/3f8fcb23-e292-46c7-83ed-a611d6721b7d)
+
 * Create instance of your services
 * Automatically resolve dependencies
 * Create Beans
